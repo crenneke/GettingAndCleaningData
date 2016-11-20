@@ -59,11 +59,11 @@ colnames(subj_train)<-c("Subject")
 xtest<-read.fwf("./UCI HAR Dataset/test/X_test.txt", widths=rep(16,561)) #Read x-test data
 colnames(xtest)<-features$V2 #Name columns based on features.txt
 ytest<-read.table("./UCI HAR Dataset/test/y_test.txt", header=FALSE) #Read y-test data
-colnames(ytest)<-c("Activity")
-subj_test<-read.table("./UCI HAR Dataset/test/subject_test.txt", header=FALSE)
-colnames(subj_test)<-c("Subject")
-activity_labels<-read.table("./UCI HAR Dataset/activity_labels.txt")
-colnames(activity_labels)<-c("Activity_Key", "Activity_Label")
+colnames(ytest)<-c("Activity") #Name activity column semantically
+subj_test<-read.table("./UCI HAR Dataset/test/subject_test.txt", header=FALSE) #Read subject data
+colnames(subj_test)<-c("Subject") #Name subject column semantically
+activity_labels<-read.table("./UCI HAR Dataset/activity_labels.txt") #Read activity labels
+colnames(activity_labels)<-c("Activity_Key", "Activity_Label") #Name activity columns for labelling semantically
 
 #Merge train and test files
 train<-cbind(ytrain,subj_train,xtrain) #combine y-train with x-train
@@ -76,7 +76,7 @@ Append train and test data since they have the same structure and reduce to mean
 #Append train and test files and label, since the have the same structure
 traintest<-rbind(train,test) #Append datasets since structurally the same
 tt_nodup<-traintest[,!duplicated(colnames(traintest))] #Deduplicate columns
-tt_nodup_label<-merge(tt_nodup,activity_labels,by.x="Activity", by.y="Activity_Key", all=TRUE)
+tt_nodup_label<-merge(tt_nodup,activity_labels,by.x="Activity", by.y="Activity_Key", all=TRUE) #Join activity labels based on activity keys
 ```
 ## Reduce data to mean and standard deviation and aggregate
 Reduce width of data set to only subject and activity info as well as mean and standard deviation features and aggregate by subject and activity, using the mean function:
